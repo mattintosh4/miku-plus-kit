@@ -1,0 +1,168 @@
+#!/bin/sh
+#
+# MikuInstaller+ Kit @VERSION@
+# Copyright (C) 2013 mattintosh4, @GitHub@
+#
+
+usage="\
+ミクインストーラー・プラス・キット @VERSION@
+Copyright (C) 2013 mattintosh4, @GitHub@
+
+概要：
+    MikuInstaller-20080803.dmg から新しいバージョンの Wine を内蔵した
+    MikuInstaller.app を作成するキットです。詳しくは README.html を参照してください。
+
+Wine バージョン：
+    @WINE_VERSION@
+
+実行例：
+    $0 /path/to/MikuInstaller-20080803.dmg
+"
+
+while :
+do
+    case $1 in
+    -d|--debug)
+        shift
+        xtrace=
+        export PS4="\[\033[33m\]DEBUG: \[\033[m\]"
+        ;;
+    ?*)
+        break
+        ;;
+    "")
+        echo "$usage"
+        exit
+        ;;
+    esac
+done
+
+#-------------------------------------------------------------------------------
+
+define(){ eval ${1:?}=\${@:2}; }
+
+set -eu ${xtrace+-x}
+set -a
+
+define  MIKU_DMG            $1
+define  MIKU_DMG_CHECKSUM   \$7342E1D2
+define  MIKU_APP            MikuInstaller.app
+define  MIKU_BUNDLE         $MIKU_APP/Contents/Resources/Wine.bundle
+
+define  PLUS_PREFIX         $(cd "$(dirname "$0")"; pwd)
+define  PLUS_FILE1          $PLUS_PREFIX/.rsrc/Wine.bundle
+define  PLUS_FILE2          $PLUS_PREFIX/.rsrc/miku-plus-kit.patch
+define  PLUS_VERSION        @VERSION@
+define  PLUS_DISTFILE_VOLN  MikuInstallerPlus_$PLUS_VERSION
+define  PLUS_DISTFILE_NAME  MikuInstallerPlus_$PLUS_VERSION.dmg
+define  PLUS_DISTFILE_PATH  ~/Desktop/$PLUS_DISTFILE_NAME
+
+define  DITTO               /usr/bin/ditto
+define  FIND                /usr/bin/find
+define  HDIUTIL             /usr/bin/hdiutil
+define  MKTEMP              /usr/bin/mktemp
+define  PATCH               /usr/bin/patch
+
+#-------------------------------------------------------------------------------
+
+ResourceCheck()
+{
+    function resourcecheck__miku
+    {
+        echo "$MIKU_DMG のチェックサムを確認しています..."
+        set -- $($MKTEMP -u -t $$$$).plist
+        (
+            trap "rm -f $1" EXIT
+            $HDIUTIL imageinfo -plist "$MIKU_DMG" > $1
+            case $(defaults read ${1%.plist} "Checksum Value") in
+            $MIKU_DMG_CHECKSUM)
+                echo "チェックサムの確認が完了しました。"
+                ;;
+            *)
+                echo "チェックサムが一致しなかったため処理を中止します。ディスクイメージを確認してください。" >&2
+                return 1
+                ;;
+            esac
+        )
+    }
+
+    function resourcecheck__plus
+    {
+        echo "更新に必要なファイルを確認しています..."
+        if $FIND -f "$PLUS_FILE1" \
+                    "$PLUS_FILE2" \
+                    -prune >/dev/null
+        then
+            echo "ファイルの確認が完了しました。"
+        else
+            echo "更新に必要なファイルが見つからなかったため処理を中止します。" >&2
+            return 1
+        fi
+    }
+
+}
+
+MikuPlusKit()
+{
+    function mikupluskit__bundle
+    {
+        function mikupluskit__bundle__miku_import
+        {
+            echo "$MIKU_APP をインポートしています..."
+            $DITTO $WORKDIR/MikuInstaller/$MIKU_APP $WORKDIR/$MIKU_APP
+        }
+        function mikupluskit__bundle__miku_update
+        {
+            echo "$MIKU_APP を更新しています..."
+            $PATCH -d $WORKDIR -Nsp1 < "$PLUS_FILE2"
+            rm -rf $WORKDIR/$MIKU_BUNDLE/Contents/SharedFrameworks
+            $DITTO "$PLUS_FILE1" $WORKDIR/$MIKU_BUNDLE
+        }
+    ${FUNCNAME}__$1; }
+
+    function mikupluskit__dmg
+    {
+        function mikupluskit__dmg__miku_attach
+        {
+            $HDIUTIL attach -nobrowse -mountroot $WORKDIR "$MIKU_DMG" >/dev/null
+        }
+        function mikupluskit__dmg__miku_detach
+        {
+            $HDIUTIL detach $WORKDIR/MikuInstaller >/dev/null
+        }
+        function mikupluskit__dmg__plus_create
+        {
+            echo "新しいディスクイメージを作成しています..."
+            ln -s /Applications $WORKDIR
+            $HDIUTIL create -ov \
+                            -srcdir   $WORKDIR \
+                            -volname  $PLUS_DISTFILE_VOLN \
+                                      $PLUS_DISTFILE_PATH
+            $HDIUTIL attach -autoopen $PLUS_DISTFILE_PATH >/dev/null
+        }
+    ${FUNCNAME}__$1; }
+
+    WORKDIR=$($MKTEMP -d -t $$$$)
+    trap "echo '作業領域を掃除しています...' ; rm -rf $WORKDIR" EXIT
+}
+
+#-------------------------------------------------------------------------------
+
+main()
+(
+    ResourceCheck
+    resourcecheck__miku
+    resourcecheck__plus
+
+    MikuPlusKit
+    mikupluskit__dmg    miku_attach
+    mikupluskit__bundle miku_import
+    mikupluskit__dmg    miku_detach
+    mikupluskit__bundle miku_update
+    mikupluskit__dmg    plus_create
+)
+
+#-------------------------------------------------------------------------------
+
+sh -eu ${xtrace+-x} -c main
+echo '＼(^o^)／ﾃﾞｷﾀ'

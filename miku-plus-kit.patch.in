@@ -1,0 +1,198 @@
+diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist	2008-08-03 21:25:43.000000000 +0900
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist	2013-10-23 07:42:13.000000000 +0900
+@@ -1,11 +1,11 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+ <plist version="1.0">
+ <dict>
+ 	<key>CFBundleInfoDictionaryVersion</key>
+ 	<string>6.0</string>
+ 	<key>CFBundleGetInfoString</key>
+-	<string>MikuInstaller 20080803, wine-1.1.2</string>
++	<string>MikuInstaller+ 20131023, wine-1.7.4</string>
+ 	<key>CFBundleName</key>
+ 	<string>MikuInstaller</string>
+ 	<key>CFBundleVersion</key>
+diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine	2008-08-03 21:25:41.000000000 +0900
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine	2013-10-23 07:29:47.000000000 +0900
+@@ -73,7 +73,7 @@
+     # pass through to startwine.sh
+     ;;
+   shellexec)          # open a file by ShellExecEx.
+-    set -- wine "$MIKURESOURCE/lib/shellexec.exe.so" "$@"
++    set -- wine start /unix "$@"
+     ;;
+   '')                 # no extension specified; wine compatible mode
+     set -- wine "$@"
+@@ -84,13 +84,13 @@
+     ;;
+ esac
+ 
+-. "$MIKURESOURCE/script/startx11.sh"
++#. "$MIKURESOURCE/script/startx11.sh"
+ . "$MIKURESOURCE/script/wineprefixcreate.sh"
+ 
+-osascript <<END || :
+-with timeout 3 seconds
+-  tell application "X11" to activate
+-end timeout
+-END
++#osascript <<END || :
++#with timeout 3 seconds
++#  tell application "X11" to activate
++#end timeout
++#END
+ 
+ . "$MIKURESOURCE/script/startwine.sh"
+diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf	2008-08-03 21:25:41.000000000 +0900
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf	2013-10-23 07:29:47.000000000 +0900
+@@ -329,3 +329,61 @@
+ 
+ [OSXIME]
+ HKCU,%Drivers%,"Ime",,"osxime"
++
++;;
++;; timezones.inf
++;;
++;; Copyright (C) 20013 mattintosh4. All rights reserved.
++;; https://github.com/mattintosh4
++;;
++;; Redistribution and use in source and binary forms, with or without
++;; modification, are permitted provided that the following conditions
++;; are met:
++;;  1. Redistributions of source code must retain the above copyright
++;;     notice, this list of conditions and the following disclaimer.
++;;  2. Redistributions in binary form must reproduce the above copyright
++;;     notice, this list of conditions and the following disclaimer in
++;;     the documentation and/or other materials provided with the
++;;     distribution.
++;; THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS''
++;; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
++;; THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
++;; PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
++;; BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++;; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++;; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
++;; BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++;; WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
++;; OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
++;; IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++;;
++
++[DefaultInstall]
++AddReg=TimeZones
++
++[DefaultInstall.NT]
++AddReg=TimeZones
++
++[Strings]
++Control          = System\CurrentControlSet\Control
++CurrentVersionNT = Software\Microsoft\Windows NT\CurrentVersion
++
++[TimeZones]
++HKCU,%CurrentVersionNT%\Time Zones                      ,"TimeZoneKeyName"  ,          ,"Tokyo Standard Time"
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"Display"          ,          ,"(GMT+09:00) 大阪、札幌、東京"
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"Dlt"              ,          ,"東京 (夏時間)"
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"Index"            ,0x00010001,0x000000eb
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"MapID"            ,          ,"18,19"
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"Std"              ,          ,"東京 (標準時)"
++HKLM,%CurrentVersionNT%\Time Zones\Tokyo Standard Time  ,"TZI"              ,0x00000001,e4,fd,ff,ff,00,00,00,00,c4,ff,ff,ff,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
++HKLM,%Control%\TimeZoneInformation                      ,"ActiveTimeBias"   ,0x00010001,0xfffffde4
++HKLM,%Control%\TimeZoneInformation                      ,"Bias"             ,0x00010001,0xfffffde4
++HKLM,%Control%\TimeZoneInformation                      ,"DaylightBias"     ,0x00010001,0x00000000
++HKLM,%Control%\TimeZoneInformation                      ,"DaylightName"     ,          ,"東京 (標準時)"
++HKLM,%Control%\TimeZoneInformation                      ,"DaylightStart"    ,0x00000001,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
++HKLM,%Control%\TimeZoneInformation                      ,"StandardBias"     ,0x00010001,0x00000000
++HKLM,%Control%\TimeZoneInformation                      ,"StandardName"     ,          ,"東京 (標準時)"
++HKLM,%Control%\TimeZoneInformation                      ,"StandardStart"    ,0x00000001,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
++
++HKLM,%Control%\TimeZoneInformation                      ,"TimeZoneKeyName"  ,0x00000004
++HKLM,%CurrentVersionNT%\Time Zones\Korea Standard Time  ,                   ,0x00000004
+diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh	2008-08-03 21:25:41.000000000 +0900
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh	2013-10-23 07:29:47.000000000 +0900
+@@ -44,29 +44,29 @@
+ MIKUFRAMEWORK="$MIKUBUNDLE/Contents/SharedFrameworks"
+ MIKUSUPPORT="$MIKUBUNDLE/Contents/SharedSupport"
+ 
+-if [ -z "$DISPLAY" ]; then
+-  . "$MIKURESOURCE/script/startx11.sh"
+-fi
++#if [ -z "$DISPLAY" ]; then
++#  . "$MIKURESOURCE/script/startx11.sh"
++#fi
+ 
+ # libfreetype.6.dylib is one of essential library for Wine.
+-if [ -f "/usr/X11/lib/libfreetype.6.dylib" ]; then
+-  X11DIR=/usr/X11
+-elif [ -f "/usr/X11R6/lib/libfreetype.6.dylib" ]; then
+-  X11DIR=/usr/X11R6
+-else
+-  echo "WARNING: libfreetype.6.dylib is not found in the standard place." 1>&2
+-  if [ -d "/usr/X11" ]; then
+-    X11DIR=/usr/X11
+-  else
+-    X11DIR=/usr/X11R6
+-  fi
+-fi
+-
+-if [ -n "$LD_LIBRARY_PATH" ]; then
+-  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:"
+-fi
+-LD_LIBRARY_PATH="$LD_LIBRARY_PATH""$MIKURESOURCE/lib:$MIKUFRAMEWORK/lib:$X11DIR/lib"
+-export LD_LIBRARY_PATH
++#if [ -f "/usr/X11/lib/libfreetype.6.dylib" ]; then
++#  X11DIR=/usr/X11
++#elif [ -f "/usr/X11R6/lib/libfreetype.6.dylib" ]; then
++#  X11DIR=/usr/X11R6
++#else
++#  echo "WARNING: libfreetype.6.dylib is not found in the standard place." 1>&2
++#  if [ -d "/usr/X11" ]; then
++#    X11DIR=/usr/X11
++#  else
++#    X11DIR=/usr/X11R6
++#  fi
++#fi
++
++#if [ -n "$LD_LIBRARY_PATH" ]; then
++#  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:"
++#fi
++#LD_LIBRARY_PATH="$LD_LIBRARY_PATH""$MIKURESOURCE/lib:$MIKUFRAMEWORK/lib:$X11DIR/lib"
++#export LD_LIBRARY_PATH
+ 
+ #
+ # WORKAROUND: Wine doesn't work with Apple's X11 on Tiger due to
+@@ -74,9 +74,14 @@
+ # To avoid this problem, we force to disable OpenGL support of wine
+ # if X11 is XFree86.
+ #
+-if $X11DIR/bin/xdpyinfo 2>&1 | grep XFree86 > /dev/null 2>&1; then
+-  WINE_OPENGL_HACK=0
+-  export WINE_OPENGL_HACK
++#if $X11DIR/bin/xdpyinfo 2>&1 | grep XFree86 > /dev/null 2>&1; then
++#  WINE_OPENGL_HACK=0
++#  export WINE_OPENGL_HACK
++#fi
++
++if [ -z "$WINEDEBUG" ]; then
++  WINEDEBUG=fixme-all
++  export WINEDEBUG
+ fi
+ 
+ PATH="$MIKUSUPPORT/bin:$PATH"
+diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/backend.sh b/MikuInstaller.app/Contents/Resources/backend.sh
+--- a/MikuInstaller.app/Contents/Resources/backend.sh	2008-08-03 21:25:48.000000000 +0900
++++ b/MikuInstaller.app/Contents/Resources/backend.sh	2013-10-23 07:29:47.000000000 +0900
+@@ -61,7 +61,7 @@
+     ;;
+ 
+   open)
+-    "$WINE" --miku=debug --miku=shellexec -c "$@"
++    "$WINE" --miku=debug --miku=shellexec "$@"
+     ;;
+ 
+   winecfg)
