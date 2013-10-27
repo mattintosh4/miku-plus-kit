@@ -113,7 +113,7 @@ MikuPlusKit()
         }
         function mikupluskit__bundle__miku_update
         {
-            echo "$MIKU_APP を更新しています..."
+            echo "新しい $MIKU_APP を作成しています..."
             $PATCH -d $WORKDIR -Nsp1 < "$PLUS_FILE2"
             rm -rf $WORKDIR/$MIKU_BUNDLE/Contents/SharedFrameworks
             $DITTO "$PLUS_FILE1" $WORKDIR/$MIKU_BUNDLE
@@ -132,7 +132,7 @@ MikuPlusKit()
         }
         function mikupluskit__dmg__plus_create
         {
-            echo "新しいディスクイメージを作成しています..."
+            echo "ディスクイメージを作成しています..."
             ln -s /Applications $WORKDIR
             $HDIUTIL create -ov \
                             -srcdir   $WORKDIR \

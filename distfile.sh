@@ -30,6 +30,8 @@ define  PERL_MD_MODULE      $PROJECT_ROOT/Markdown.pl
 
 define  PS4
 
+#-------------------------------------------------------------------------------
+
 main()
 {
     tmpdir=$($MKTEMP -d -t $PROJECT_NAME)
@@ -41,6 +43,7 @@ main()
     $INSTALL -m 0755 $PROJECT_ROOT/miku-plus-kit.sh.in    $tmpdir/miku-plus-kit.sh
     $INSTALL -m 0644 $PROJECT_ROOT/miku-plus-kit.patch.in $tmpdir/.rsrc/miku-plus-kit.patch
     echo $PROJECT_VERSION >$tmpdir/VERSION
+
     {
         cat <<EOS
 <!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULLNAME</title></head><body>
@@ -50,12 +53,14 @@ EOS
 </body></html>
 EOS
     } >$tmpdir/README.html
+
     $SED -i "" "
         s|@VERSION@|$PROJECT_VERSION|g
         s|@WINE_VERSION@|$BUNDLE_VERSION|g
         s|@GitHub@|$PROJECT_URL|g
-    "   $tmpdir/miku-plus-kit.sh \
-        $tmpdir/README.html
+    "   $tmpdir/.rsrc/miku-plus-kit.patch \
+        $tmpdir/README.html \
+        $tmpdir/miku-plus-kit.sh
 
     $HDIUTIL create -ov -attach \
         -format  UDBZ \
