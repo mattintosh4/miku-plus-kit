@@ -34,7 +34,7 @@ MikuInstaller の Wine を @WINE_VERSION@ にアップデートするキット�
 ## 使用方法
 
 1. __MikuInstaller-20080803.dmg__ を用意してください。
-2. __MikuPlusKit_@VERSION@.dmg__ をマウントしてターミナルで「miku-plus-kit.sh」を実行します。実行の際に MikuInstaller-20080803.dmg のパスを引数に指定する必要があります。
+2. __MikuPlusKit\_@VERSION@.dmg__ をマウントしてターミナルで「miku-plus-kit.sh」を実行します。実行の際に MikuInstaller-20080803.dmg のパスを引数に指定する必要があります。
 3. 新しいディスクイメージがデスクトップ上に作成され、マウントされたら完了です。
 4. 新しい MikuInstaller.app を使用する前に古い MikuInstaller.app を新しいもので上書きするか削除してください（古い方が呼び出される可能性があります）。
 

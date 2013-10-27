@@ -7,7 +7,7 @@ define(){ eval ${1:?}=\"\${*\:2}\"; }
 set -a
 
 define  PROJECT_NAME        MikuPlusKit
-define  PROJECT_FULL_NAME   MikuInstaller+ Kit
+define  PROJECT_FULLNAME    MikuInstaller+ Kit
 define  PROJECT_ROOT        $(cd "$(dirname "$0")"; pwd)
 define  PROJECT_VERSION     $(date +%Y%m%d)
 define  PROJECT_URL         https://github.com/mattintosh4/miku-plus-kit
@@ -43,7 +43,7 @@ main()
     echo $PROJECT_VERSION >$tmpdir/VERSION
     {
         cat <<EOS
-<!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULL_NAME</title></head><body>
+<!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULLNAME</title></head><body>
 EOS
         $PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md
         cat <<EOS
