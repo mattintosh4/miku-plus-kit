@@ -53,7 +53,7 @@ MikuInstaller-20080803.dmg がユーザーのホームディレクトリにあ�
 - MikuInstaller.app から X11.app が実行されないようにしてあります。
 - 一部の Windows アプリケーションが glu32.dll を必要とするため、いくつかのモジュールが XQuartz のライブラリを使用するようになっています。必要に応じて XQuartz をインストールしてください。
 - WINEDEBUG で fixme の出力を抑制してあります。デバッグメッセージが必要な場合は解除してください。
-- 「MikuInstaller.app/Contents/Resources/Wine.app/Contents」以下にある「SharedFrameworks」は丸ごと変更ですが、「SharedSupport」については新しいもので上書きしています。古いファイルが残るためアプリケーションのファイルサイズが若干増えます。
+- 「MikuInstaller.app/Contents/Resources/Wine.bundle/Contents」以下にある「SharedFrameworks」は丸ごと変更ですが、「SharedSupport」については新しいもので上書きしています。古いファイルが残るためアプリケーションのファイルサイズが若干増えます。
 - Wine.bundle のプロパティリストですが、Bundle version を書き換えると警告が出るため Get Info string のみ変更しています。
 
 
