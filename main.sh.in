@@ -6,14 +6,12 @@ ${xtrace+set -x}
 ${xtrace+declare -x PS4="DEBUG: "}
 ${verbose+set -v}
 
-set -a
-
 define  MIKU_DMG            $1
 define  MIKU_DMG_CHECKSUM   \$7342E1D2
 define  MIKU_APP            MikuInstaller.app
 define  MIKU_BUNDLE         $MIKU_APP/Contents/Resources/Wine.bundle
 
-define  PLUS_PREFIX         $(dirname $0)
+define  PLUS_PREFIX         $(cd "$(dirname "$0")"; pwd)
 define  PLUS_FILE1          $PLUS_PREFIX/Wine.bundle
 define  PLUS_FILE2          $PLUS_PREFIX/patch.diff
 define  PLUS_BUNDLE_NAME    MikuInstaller+
@@ -138,9 +136,6 @@ MikuPlusKit()
 
     tmpdir=$($MKTEMP -d -t $PLUS_DISTFILE_VOLN)
     mountpoint=$tmpdir/MikuInstaller
-
-    trap mikupluskit__try_detach INT
-    trap mikupluskit__try_remove EXIT
 }
 
 #-------------------------------------------------------------------------------
@@ -152,13 +147,19 @@ main()
     resourcecheck__plus
 
     MikuPlusKit
+    trap "mikupluskit__try_detach" INT
+    trap "mikupluskit__try_remove" EXIT
+
     mikupluskit__dmg    miku_attach
     mikupluskit__bundle miku_import
-    mikupluskit__dmg    miku_detach
+    mikupluskit__try_detach
+    trap - INT
+
     mikupluskit__bundle miku_update
     mikupluskit__dmg    plus_create
+    mikupluskit__try_remove
+    trap - EXIT
+
+    echo '＼(^o^)／ﾃﾞｷﾀ'
 }
-
-#-------------------------------------------------------------------------------
-
-/bin/sh -eu${xtrace+x}${verbose+v} -c main
+main
