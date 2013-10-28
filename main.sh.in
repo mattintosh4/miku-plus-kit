@@ -117,7 +117,8 @@ MikuPlusKit()
                 sleep 1
             fi
         done
-        echo "$MIKU_DMG が正しく取り外せなかった可能性があります。ディスクユーティリティから取り外してください。"
+        echo "$MIKU_DMG が正しく取り外せなかった可能性があります。\
+ディスクユーティリティから取り外してください。" >&2
         trap - EXIT
         exit 1
     }
