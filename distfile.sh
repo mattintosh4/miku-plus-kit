@@ -45,11 +45,15 @@ main()
     $INSTALL -m 0644 $PROJECT_ROOT/patch.diff.in $tmpdir/.rsrc/patch.diff
     echo $PROJECT_VERSION >$tmpdir/VERSION
 
-    cat >$tmpdir/README.html <<EOS
+    {
+        cat <<EOS
 <!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULLNAME</title></head><body>
-$($PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md)
+EOS
+        $PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md
+        cat <<EOS
 </body></html>
 EOS
+    } > $tmpdir/README.html
 
     items=(
         $tmpdir/.rsrc/main.sh
