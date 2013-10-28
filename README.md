@@ -16,10 +16,8 @@ MikuInstaller の Wine を @WINE_VERSION@ にアップデートするキット�
 - XQuartz 2.7.4 以上 <sup>*2</sup>
 - MikuInstaller 20080803
 
-<div style="font-size: smaller;">
 注1：10.7 以降の動作環境が無いため正確な動作確認はしていません。
-注2：XQuartz は X11 グラッフィクスドライバを使用する場合、または glu32.dll を必要とする Windows アプリケーションを実行する場合に必要です。
-</div>
+注2：XQuartz は X11 グラッフィクスドライバを使用する場合または glu32.dll を必要とする Windows アプリケーションを実行する場合に必要です。
 
 
 
@@ -34,8 +32,8 @@ MikuInstaller の Wine を @WINE_VERSION@ にアップデートするキット�
 ## 使用方法
 
 1. __MikuInstaller-20080803.dmg__ を用意してください。
-2. __MikuPlusKit\_@VERSION@.dmg__ をマウントしてターミナルで「miku-plus-kit.sh」を実行します。実行の際に MikuInstaller-20080803.dmg のパスを引数に指定する必要があります。
-3. 新しいディスクイメージがデスクトップ上に作成され、マウントされたら完了です。
+2. __MikuPlusKit\_@VERSION@.dmg__ をマウントしてターミナルで「update.sh」を実行します。実行の際に MikuInstaller-20080803.dmg のパスを引数に指定する必要があります。
+3. 新しいディスクイメージがデスクトップ上に作成され、マウントされたら完了です。（注：デスクトップ上に既に同じ名前のディスクイメージがある場合は上書きされます）
 4. 新しい MikuInstaller.app を使用する前に古い MikuInstaller.app を新しいもので上書きするか削除してください（古い方が呼び出される可能性があります）。
 
 ### スクリプト実行例
@@ -43,7 +41,7 @@ MikuInstaller の Wine を @WINE_VERSION@ にアップデートするキット�
 MikuInstaller-20080803.dmg がユーザーのホームディレクトリにある場合の例です。
 
 ```
-/Volumes/MikuPlusKit/miku-plus-kit.sh ~/MikuInstaller-20080803.dmg
+/Volumes/MikuPlusKit/update.sh ~/MikuInstaller-20080803.dmg
 ```
 
 

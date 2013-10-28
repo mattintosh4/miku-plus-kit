@@ -125,7 +125,7 @@ MikuPlusKit()
 
     function mikupluskit__try_remove
     {
-        echo '作業領域を掃除しています...'
+        echo "作業領域を掃除しています..."
         rm -rf $tmpdir
     }
 
