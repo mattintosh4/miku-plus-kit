@@ -1,47 +1,7 @@
 #!/bin/sh
-#
-# MikuInstaller+ Kit @VERSION@
-# Copyright (C) 2013 mattintosh4, @GitHub@
-#
+define(){ eval ${1:?}=\"\${*\:2}\"; }
 
-usage="\
-ミクインストーラー・プラス・キット @VERSION@
-Copyright (C) 2013 mattintosh4, @GitHub@
-
-概要：
-    MikuInstaller-20080803.dmg から新しいバージョンの Wine を内蔵した
-    MikuInstaller.app を作成するキットです。詳しくは README.html を参照してください。
-
-Wine バージョン：
-    @WINE_VERSION@
-
-実行例：
-    $0 /path/to/MikuInstaller-20080803.dmg
-"
-
-while :
-do
-    case $1 in
-    -d|--debug)
-        shift
-        xtrace=
-        export PS4="\[\033[33m\]DEBUG: \[\033[m\]"
-        ;;
-    ?*)
-        break
-        ;;
-    "")
-        echo "$usage"
-        exit
-        ;;
-    esac
-done
-
-#-------------------------------------------------------------------------------
-
-define(){ eval ${1:?}=\${@:2}; }
-
-set -eu ${xtrace+-x}
+set -eu ${xtrace+-x} ${verbose+-v}
 set -a
 
 define  MIKU_DMG            $1
@@ -49,9 +9,9 @@ define  MIKU_DMG_CHECKSUM   \$7342E1D2
 define  MIKU_APP            MikuInstaller.app
 define  MIKU_BUNDLE         $MIKU_APP/Contents/Resources/Wine.bundle
 
-define  PLUS_PREFIX         $(cd "$(dirname "$0")"; pwd)
-define  PLUS_FILE1          $PLUS_PREFIX/.rsrc/Wine.bundle
-define  PLUS_FILE2          $PLUS_PREFIX/.rsrc/miku-plus-kit.patch
+define  PLUS_PREFIX         $(dirname $0)
+define  PLUS_FILE1          $PLUS_PREFIX/Wine.bundle
+define  PLUS_FILE2          $PLUS_PREFIX/patch.diff
 define  PLUS_VERSION        @VERSION@
 define  PLUS_DISTFILE_VOLN  MikuInstallerPlus_$PLUS_VERSION
 define  PLUS_DISTFILE_NAME  MikuInstallerPlus_$PLUS_VERSION.dmg
@@ -99,7 +59,6 @@ ResourceCheck()
             return 1
         fi
     }
-
 }
 
 MikuPlusKit()
@@ -109,14 +68,14 @@ MikuPlusKit()
         function mikupluskit__bundle__miku_import
         {
             echo "$MIKU_APP をインポートしています..."
-            $DITTO $WORKDIR/MikuInstaller/$MIKU_APP $WORKDIR/$MIKU_APP
+            $DITTO $tmpdir/MikuInstaller/$MIKU_APP $tmpdir/$MIKU_APP
         }
         function mikupluskit__bundle__miku_update
         {
             echo "新しい $MIKU_APP を作成しています..."
-            $PATCH -d $WORKDIR -Nsp1 < "$PLUS_FILE2"
-            rm -rf $WORKDIR/$MIKU_BUNDLE/Contents/SharedFrameworks
-            $DITTO "$PLUS_FILE1" $WORKDIR/$MIKU_BUNDLE
+            $PATCH -d $tmpdir -Nsp1 < "$PLUS_FILE2"
+            rm -rf $tmpdir/$MIKU_BUNDLE/Contents/SharedFrameworks
+            $DITTO "$PLUS_FILE1" $tmpdir/$MIKU_BUNDLE
         }
     ${FUNCNAME}__$1; }
 
@@ -124,32 +83,32 @@ MikuPlusKit()
     {
         function mikupluskit__dmg__miku_attach
         {
-            $HDIUTIL attach -nobrowse -mountroot $WORKDIR "$MIKU_DMG" >/dev/null
+            $HDIUTIL attach -nobrowse -mountroot $tmpdir "$MIKU_DMG" >/dev/null
         }
         function mikupluskit__dmg__miku_detach
         {
-            $HDIUTIL detach $WORKDIR/MikuInstaller >/dev/null
+            $HDIUTIL detach $tmpdir/MikuInstaller >/dev/null
         }
-        function mikupluskit__dmg__plus_create
+        function mikupluskit__dmg__miku_create
         {
             echo "ディスクイメージを作成しています..."
-            ln -s /Applications $WORKDIR
+            ln -s /Applications $tmpdir
             $HDIUTIL create -ov \
-                            -srcdir   $WORKDIR \
+                            -srcdir   $tmpdir \
                             -volname  $PLUS_DISTFILE_VOLN \
                                       $PLUS_DISTFILE_PATH
             $HDIUTIL attach -autoopen $PLUS_DISTFILE_PATH >/dev/null
         }
     ${FUNCNAME}__$1; }
 
-    WORKDIR=$($MKTEMP -d -t $$$$)
-    trap "echo '作業領域を掃除しています...' ; rm -rf $WORKDIR" EXIT
+    tmpdir=$($MKTEMP -d -t $$$$)
+    trap "echo '作業領域を掃除しています...' ; rm -rf $tmpdir" EXIT
 }
 
 #-------------------------------------------------------------------------------
 
 main()
-(
+{
     ResourceCheck
     resourcecheck__miku
     resourcecheck__plus
@@ -159,10 +118,10 @@ main()
     mikupluskit__bundle miku_import
     mikupluskit__dmg    miku_detach
     mikupluskit__bundle miku_update
-    mikupluskit__dmg    plus_create
-)
+    mikupluskit__dmg    miku_create
+}
 
 #-------------------------------------------------------------------------------
 
-/bin/sh -eu ${xtrace+-x} -c main
+/bin/sh -eu ${xtrace+-x} ${verbose+-v} -c main
 echo '＼(^o^)／ﾃﾞｷﾀ'

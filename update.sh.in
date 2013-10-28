@@ -1,0 +1,26 @@
+#!/bin/sh
+
+usage="\
+ミクインストーラー・プラス・キット @VERSION@
+Copyright (C) 2013 mattintosh4, @GitHub@
+
+概要：
+    MikuInstaller-20080803.dmg から新しいバージョンの Wine を内蔵した
+    MikuInstaller.app を作成するキットです。詳しくは README.html を参照してください。
+
+Wine バージョン：
+    @WINE_VERSION@
+
+実行例：
+    $0 /path/to/MikuInstaller-20080803.dmg
+"
+
+case $1 in
+"")
+    echo "$usage"
+    exit
+    ;;
+*)
+    exec "$(cd "$(dirname "$0")"; pwd)"/.rsrc/main.sh "$@"
+    ;;
+esac

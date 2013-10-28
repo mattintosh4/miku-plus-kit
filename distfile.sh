@@ -40,27 +40,28 @@ main()
     $DITTO $BUNDLE_SOURCE $tmpdir/.rsrc/$BUNDLE_CONTENTS/SharedSupport
     $LN -s SharedSupport  $tmpdir/.rsrc/$BUNDLE_CONTENTS/SharedFrameworks
 
-    $INSTALL -m 0755 $PROJECT_ROOT/miku-plus-kit.sh.in    $tmpdir/miku-plus-kit.sh
-    $INSTALL -m 0644 $PROJECT_ROOT/miku-plus-kit.patch.in $tmpdir/.rsrc/miku-plus-kit.patch
+    $INSTALL -m 0755 $PROJECT_ROOT/update.sh.in  $tmpdir/update.sh
+    $INSTALL -m 0755 $PROJECT_ROOT/main.sh.in    $tmpdir/.rsrc/main.sh
+    $INSTALL -m 0644 $PROJECT_ROOT/patch.diff.in $tmpdir/.rsrc/patch.diff
     echo $PROJECT_VERSION >$tmpdir/VERSION
 
-    {
-        cat <<EOS
+    cat >$tmpdir/README.html <<EOS
 <!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULLNAME</title></head><body>
-EOS
-        $PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md
-        cat <<EOS
+$($PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md)
 </body></html>
 EOS
-    } >$tmpdir/README.html
 
+    items=(
+        $tmpdir/.rsrc/main.sh
+        $tmpdir/.rsrc/patch.diff
+        $tmpdir/README.html
+        $tmpdir/update.sh
+    )
     $SED -i "" "
         s|@VERSION@|$PROJECT_VERSION|g
         s|@WINE_VERSION@|$BUNDLE_VERSION|g
         s|@GitHub@|$PROJECT_URL|g
-    "   $tmpdir/.rsrc/miku-plus-kit.patch \
-        $tmpdir/README.html \
-        $tmpdir/miku-plus-kit.sh
+    " "${items[@]}"
 
     $HDIUTIL create -ov -attach \
         -format  UDBZ \
