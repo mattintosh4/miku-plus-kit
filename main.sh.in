@@ -42,7 +42,7 @@ ResourceCheck()
             $HDIUTIL imageinfo -plist "$MIKU_DMG" > $1
             case $(defaults read ${1%.plist} "Checksum Value") in
             $MIKU_DMG_CHECKSUM)
-                echo "チェックサムの確認が完了しました。"
+                return
                 ;;
             *)
                 echo "チェックサムが一致しなかったため処理を中止します。ディスクイメージを確認してください。" >&2
@@ -55,11 +55,11 @@ ResourceCheck()
     function resourcecheck__plus
     {
         echo "更新に必要なファイルを確認しています..."
-        if $FIND -f "$PLUS_FILE1" \
-                    "$PLUS_FILE2" \
-                    -prune >/dev/null
+        set -- "$PLUS_FILE1" \
+               "$PLUS_FILE2"
+        if $FIND -f "$@" -prune >/dev/null
         then
-            echo "ファイルの確認が完了しました。"
+            return
         else
             echo "更新に必要なファイルが見つからなかったため処理を中止します。" >&2
             return 1
@@ -92,11 +92,11 @@ MikuPlusKit()
     {
         function mikupluskit__dmg__miku_attach
         {
-            $HDIUTIL attach -nobrowse -mountroot $tmpdir "$MIKU_DMG"
+            $HDIUTIL attach -nobrowse -mountroot $tmpdir "$MIKU_DMG" >/dev/null
         }
         function mikupluskit__dmg__miku_detach
         {
-            $HDIUTIL detach $mountpoint
+            $HDIUTIL detach $mountpoint >/dev/null
         }
         function mikupluskit__dmg__plus_create
         {
@@ -159,7 +159,9 @@ main()
     mikupluskit__dmg    plus_create
     mikupluskit__try_remove
     trap - EXIT
-
-    echo '＼(^o^)／ﾃﾞｷﾀ'
 }
+
+#-------------------------------------------------------------------------------
+
 main
+echo '＼(^o^)／ﾃﾞｷﾀ'
