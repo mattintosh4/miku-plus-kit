@@ -1,7 +1,11 @@
 #!/bin/sh
 define(){ eval ${1:?}=\"\${*\:2}\"; }
 
-set -eu ${xtrace+-x} ${verbose+-v}
+set -eu
+${xtrace+set -x}
+${xtrace+declare -x PS4="DEBUG: "}
+${verbose+set -v}
+
 set -a
 
 define  MIKU_DMG            $1
@@ -68,7 +72,7 @@ MikuPlusKit()
         function mikupluskit__bundle__miku_import
         {
             echo "$MIKU_APP をインポートしています..."
-            $DITTO $tmpdir/MikuInstaller/$MIKU_APP $tmpdir/$MIKU_APP
+            $DITTO $mountpoint/$MIKU_APP $tmpdir/$MIKU_APP
         }
         function mikupluskit__bundle__miku_update
         {
@@ -83,13 +87,13 @@ MikuPlusKit()
     {
         function mikupluskit__dmg__miku_attach
         {
-            $HDIUTIL attach -nobrowse -mountroot $tmpdir "$MIKU_DMG" >/dev/null
+            $HDIUTIL attach -nobrowse -mountroot $tmpdir "$MIKU_DMG"
         }
         function mikupluskit__dmg__miku_detach
         {
-            $HDIUTIL detach $tmpdir/MikuInstaller >/dev/null
+            $HDIUTIL detach $mountpoint
         }
-        function mikupluskit__dmg__miku_create
+        function mikupluskit__dmg__plus_create
         {
             echo "ディスクイメージを作成しています..."
             ln -s /Applications $tmpdir
@@ -101,8 +105,34 @@ MikuPlusKit()
         }
     ${FUNCNAME}__$1; }
 
-    tmpdir=$($MKTEMP -d -t $$$$)
-    trap "echo '作業領域を掃除しています...' ; rm -rf $tmpdir" EXIT
+    function mikupluskit__try_detach
+    {
+        for i in {1..5}
+        do
+            if [ ! -e $mountpoint ]
+            then
+                return
+            else
+                mikupluskit__dmg miku_detach
+                sleep 1
+            fi
+        done
+        echo "$MIKU_DMG が正しく取り外せなかった可能性があります。ディスクユーティリティから取り外してください。"
+        trap - EXIT
+        exit 1
+    }
+
+    function mikupluskit__try_remove
+    {
+        echo '作業領域を掃除しています...'
+        rm -rf $tmpdir
+    }
+
+    tmpdir=$($MKTEMP -d -t $PLUS_DISTFILE_VOLN)
+    mountpoint=$tmpdir/MikuInstaller
+
+    trap mikupluskit__try_detach INT
+    trap mikupluskit__try_remove EXIT
 }
 
 #-------------------------------------------------------------------------------
@@ -118,10 +148,10 @@ main()
     mikupluskit__bundle miku_import
     mikupluskit__dmg    miku_detach
     mikupluskit__bundle miku_update
-    mikupluskit__dmg    miku_create
+    mikupluskit__dmg    plus_create
 }
 
 #-------------------------------------------------------------------------------
 
-/bin/sh -eu ${xtrace+-x} ${verbose+-v} -c main
+/bin/sh -eu${xtrace+x}${verbose+v} -c main
 echo '＼(^o^)／ﾃﾞｷﾀ'
