@@ -16,11 +16,15 @@ define  MIKU_BUNDLE         $MIKU_APP/Contents/Resources/Wine.bundle
 define  PLUS_PREFIX         $(dirname $0)
 define  PLUS_FILE1          $PLUS_PREFIX/Wine.bundle
 define  PLUS_FILE2          $PLUS_PREFIX/patch.diff
+define  PLUS_BUNDLE_NAME    MikuInstaller+
 define  PLUS_VERSION        @VERSION@
 define  PLUS_DISTFILE_VOLN  MikuInstallerPlus_$PLUS_VERSION
 define  PLUS_DISTFILE_NAME  MikuInstallerPlus_$PLUS_VERSION.dmg
 define  PLUS_DISTFILE_PATH  ~/Desktop/$PLUS_DISTFILE_NAME
 
+define  WINE_VERSION        @WINE_VERSION@
+
+define  DEFAULTS_WRITE      /usr/bin/defaults write
 define  DITTO               /usr/bin/ditto
 define  FIND                /usr/bin/find
 define  HDIUTIL             /usr/bin/hdiutil
@@ -80,6 +84,9 @@ MikuPlusKit()
             $PATCH -d $tmpdir -Nsp1 < "$PLUS_FILE2"
             rm -rf $tmpdir/$MIKU_BUNDLE/Contents/SharedFrameworks
             $DITTO "$PLUS_FILE1" $tmpdir/$MIKU_BUNDLE
+            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleDisplayName   "$PLUS_BUNDLE_NAME"
+            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleName          "$PLUS_BUNDLE_NAME"
+            $DEFAULTS_WRITE $tmpdir/$MIKU_BUNDLE/Contents/Info CFBundleGetInfoString "$PLUS_BUNDLE_NAME $PLUS_VERSION, $WINE_VERSION"
         }
     ${FUNCNAME}__$1; }
 
@@ -125,7 +132,7 @@ MikuPlusKit()
 
     function mikupluskit__try_remove
     {
-        echo "作業領域を掃除しています..."
+        echo "作業領域を片付けています..."
         rm -rf $tmpdir
     }
 
@@ -155,4 +162,3 @@ main()
 #-------------------------------------------------------------------------------
 
 /bin/sh -eu${xtrace+x}${verbose+v} -c main
-echo '＼(^o^)／ﾃﾞｷﾀ'

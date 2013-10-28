@@ -1,20 +1,3 @@
-diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist
---- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist	2008-08-03 21:25:43.000000000 +0900
-+++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist	2013-10-23 07:42:13.000000000 +0900
-@@ -1,11 +1,11 @@
- <?xml version="1.0" encoding="UTF-8"?>
--<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
- <plist version="1.0">
- <dict>
- 	<key>CFBundleInfoDictionaryVersion</key>
- 	<string>6.0</string>
- 	<key>CFBundleGetInfoString</key>
--	<string>MikuInstaller 20080803, wine-1.1.2</string>
-+	<string>MikuInstaller+ @VERSION@, @WINE_VERSION@</string>
- 	<key>CFBundleName</key>
- 	<string>MikuInstaller</string>
- 	<key>CFBundleVersion</key>
 diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine	2008-08-03 21:25:41.000000000 +0900
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine	2013-10-23 07:29:47.000000000 +0900
