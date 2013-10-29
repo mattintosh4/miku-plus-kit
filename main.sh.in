@@ -14,7 +14,7 @@ define  MIKU_BUNDLE         $MIKU_APP/Contents/Resources/Wine.bundle
 define  PLUS_PREFIX         $(cd "$(dirname "$0")"; pwd)
 define  PLUS_FILE1          $PLUS_PREFIX/Wine.bundle
 define  PLUS_FILE2          $PLUS_PREFIX/patch.diff
-define  PLUS_BUNDLE_NAME    MikuInstaller+
+define  PLUS_NAME           MikuInstaller+
 define  PLUS_VERSION        @VERSION@
 define  PLUS_DISTFILE_VOLN  MikuInstallerPlus_$PLUS_VERSION
 define  PLUS_DISTFILE_NAME  MikuInstallerPlus_$PLUS_VERSION.dmg
@@ -82,9 +82,9 @@ MikuPlusKit()
             $PATCH -d $tmpdir -Nsp1 < "$PLUS_FILE2"
             rm -rf $tmpdir/$MIKU_BUNDLE/Contents/SharedFrameworks
             $DITTO "$PLUS_FILE1" $tmpdir/$MIKU_BUNDLE
-            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleDisplayName   "$PLUS_BUNDLE_NAME"
-            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleName          "$PLUS_BUNDLE_NAME"
-            $DEFAULTS_WRITE $tmpdir/$MIKU_BUNDLE/Contents/Info CFBundleGetInfoString "$PLUS_BUNDLE_NAME $PLUS_VERSION, $WINE_VERSION"
+            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleDisplayName   "$PLUS_NAME"
+            $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleName          "$PLUS_NAME"
+            $DEFAULTS_WRITE $tmpdir/$MIKU_BUNDLE/Contents/Info CFBundleGetInfoString "$PLUS_NAME $PLUS_VERSION, $WINE_VERSION"
         }
     ${FUNCNAME}__$1; }
 
