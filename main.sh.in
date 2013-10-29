@@ -1,4 +1,12 @@
 #!/bin/sh
+#
+# MikuInstaller+ Kit @VERSION@  Copyright (C) 2013  mattintosh4, @GitHub@
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+
 define(){ eval ${1:?}=\"\${*\:2}\"; }
 
 set -eu
@@ -80,7 +88,7 @@ MikuPlusKit()
         {
             echo "新しい $MIKU_APP を作成しています..."
             $PATCH -d $tmpdir -Nsp1 < "$PLUS_FILE2"
-            rm -rf $tmpdir/$MIKU_BUNDLE/Contents/SharedFrameworks
+            mv $tmpdir/$MIKU_BUNDLE/Contents/{,_}SharedFrameworks
             $DITTO "$PLUS_FILE1" $tmpdir/$MIKU_BUNDLE
             $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleDisplayName   "$PLUS_NAME"
             $DEFAULTS_WRITE $tmpdir/$MIKU_APP/Contents/Info    CFBundleName          "$PLUS_NAME"

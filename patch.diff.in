@@ -33,7 +33,7 @@ diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resou
 diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf	2008-08-03 21:25:41.000000000 +0900
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/inf/MikuInstaller.inf	2013-10-23 07:29:47.000000000 +0900
-@@ -329,3 +329,61 @@
+@@ -329,3 +329,64 @@
  
  [OSXIME]
  HKCU,%Drivers%,"Ime",,"osxime"
@@ -67,14 +67,17 @@ diff -ur -x SharedSupport -x SharedFrameworks a/MikuInstaller.app/Contents/Resou
 +;;
 +
 +[DefaultInstall]
-+AddReg=TimeZones
++AddReg=DllOverrides,TimeZones
 +
 +[DefaultInstall.NT]
-+AddReg=TimeZones
++AddReg=DllOverrides,TimeZones
 +
 +[Strings]
 +Control          = System\CurrentControlSet\Control
 +CurrentVersionNT = Software\Microsoft\Windows NT\CurrentVersion
++
++[DllOverrides]
++HKCU,Software\Wine\AppDefaults\Steam.exe\DllOverrides,"dwrite",,""
 +
 +[TimeZones]
 +HKCU,%CurrentVersionNT%\Time Zones                      ,"TimeZoneKeyName"  ,          ,"Tokyo Standard Time"

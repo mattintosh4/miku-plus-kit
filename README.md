@@ -1,93 +1,164 @@
-# MikuInstaller+ Kit @VERSION@
+MikuInstaller+ Kit @VERSION@
+================================================================================
+
+このドキュメントは『MikuInstaller+ Kit』（ミクインストーラー・プラス・キット）のマニュアルです
 
 
 
-## 概要
+概要
+--------------------------------------------------------------------------------
 
-MikuInstaller の Wine を @WINE_VERSION@ にアップデートするキットです。Wine は 2013年10月現在の Nihonshu バイナリと同等のものです。
+MikuInstaller+ Kit は MikuInstaller-20080803.dmg から新しいバージョンの Wine を内蔵した MikuInstaller.app を作成するキットです。
 
-このキットは MikuInstaller-20080803.dmg 以外には使用できません。
+-   Wine バージョン<br />@WINE\_VERSION@
 
-
-
-## システム要件
-
-- Intel CPU を搭載した Mac OS X 10.6 以上 <sup>*1</sup>
-- XQuartz 2.7.4 以上 <sup>*2</sup>
-- MikuInstaller 20080803
-
-注1：10.7 以降の動作環境が無いため正確な動作確認はしていません。
-注2：XQuartz は X11 グラッフィクスドライバを使用する場合または glu32.dll を必要とする Windows アプリケーションを実行する場合に必要です。
+-   MikuInstaller 公式ページ<br /><http://sourceforge.jp/projects/mikuinstaller/>
 
 
 
-## 注意事項
+システム要件
+--------------------------------------------------------------------------------
 
-- __いかなる損害においても当方は一切責任を負いません。アップデートは自己責任で行なってください。__
-- __既存の WINEPREFIX を破壊する可能性がありますので事前に「~/Library/Application Support/MikuInstaller」のバックアップを行うことをおすすめします。__
-- Wine @WINE_VERSION@ は開発版ですので不具合が発生する可能性があります。
+-   Intel CPU を搭載した Mac OS X 10.6 以上 <sup>＊1</sup>
+-   XQuartz 2.7.4 以上 <sup>＊2</sup>
+-   MikuInstaller 20080803
 
-
-
-## 使用方法
-
-1. __MikuInstaller-20080803.dmg__ を用意してください。
-2. __MikuPlusKit\_@VERSION@.dmg__ をマウントしてターミナルで「update.sh」を実行します。実行の際に MikuInstaller-20080803.dmg のパスを引数に指定する必要があります。
-3. 新しいディスクイメージがデスクトップ上に作成され、マウントされたら完了です。（注：デスクトップ上に既に同じ名前のディスクイメージがある場合は上書きされます）
-4. 新しい MikuInstaller.app を使用する前に古い MikuInstaller.app を新しいもので上書きするか削除してください（古い方が呼び出される可能性があります）。
-
-### スクリプト実行例
-
-MikuInstaller-20080803.dmg がユーザーのホームディレクトリにある場合の例です。
-
-```
-/Volumes/MikuPlusKit/update.sh ~/MikuInstaller-20080803.dmg
-```
+<p style="font-size: smaller">
+＊1：10.7 以降については動作環境が無いため詳細確認はしていません。<br />
+＊2：XQuartz は X11 のグラッフィクスドライバを使用する場合または glu32.dll を必要とする Windows アプリケーションを実行する場合に必要です。</p>
 
 
 
-## 変更点について
+/!\\ 注意事項
+--------------------------------------------------------------------------------
 
-- MikuInstaller.app から X11.app が実行されないようにしてあります。
-- 一部の Windows アプリケーションが glu32.dll を必要とするため、いくつかのモジュールが XQuartz のライブラリを使用するようになっています。必要に応じて XQuartz をインストールしてください。
-- WINEDEBUG で fixme の出力を抑制してあります。デバッグメッセージが必要な場合は解除してください。
-- 「MikuInstaller.app/Contents/Resources/Wine.bundle/Contents」以下にある「SharedFrameworks」は丸ごと変更ですが、「SharedSupport」については新しいもので上書きしています。古いファイルが残るためアプリケーションのファイルサイズが若干増えます。
-- Wine.bundle のプロパティリストですが、Bundle version を書き換えると警告が出るため Get Info string のみ変更しています。
+-   __いかなる損害においても当方は一切責任を負いません。作業は全て自己責任で行なってください。__
 
 
+-   __既存の WINEPREFIX を破壊する可能性があります。事前に WINEPREFIX のバックアップを行うことをおすすめします。__
 
-## 備考
-
-- 元に戻す場合は MikuInstaller-20080803.dmg から再度 MikuInstaller.app をインストールしてください。
-- Gecko と Mono はキットに含まれていません。WINEPREFIX 初期化時にダウンロードを促すダイアログが表示されますのでインストールしておくことをおすすめします。
-- アプリケーションのバンドル化機能については修正していないためエラーになります。MikuInstaller の環境設定から無効にしてください。
-- 「プロセスの状況」ウィンドウの「強制終了」ボタンが動作しないようです。Wine を強制終了する場合はターミナルから killall wine を実行してください。
-- 現在の Wine は OS X のグラフィックスドライバを使用するため一部のアプリケーションで描画が正しく行われないことがありますがレジストリによるグラフィックスドライバの切り替えで対応できることがあります。
-- 稀に Wine のウィンドウを補足できなくなることがあります。Wine を強制終了してください。
+-   このキットは MikuInstaller-20080803.dmg 以外には使用できません。
 
 
 
-## その他
+使用方法
+--------------------------------------------------------------------------------
 
-### 収録コンテンツについて
+1.  「MikuInstaller-20080803.dmg」を用意してください。（マウントする必要はありません）
 
-Wine.bundle には Wine 以外に以下のリソースが含まれています。詳しくは「Wine.bundle/Contents/SharedSupport/share/doc」内のドキュメントを参照してください。
+2.  「MikuPlusKit\_@VERSION@.dmg」をマウントし、ターミナル.app などから `update.sh` を実行します。実行の際に「MikuInstaller-20080803.dmg」のパスを引数に指定してください。
 
-- freetype
-- libjpeg-turbo
-- liblzma
-- libpng
-- libtiff
-- Little-CMS
+3.  新しいディスクイメージがデスクトップ上に作成され<sup>＊1</sup>、マウントされたら完了です。
 
-### Nihonshu バイナリについて
+4.  新しい MikuInstaller.app を使用する前に古い MikuInstaller.app を新しいもので上書きするか削除してください（古い方が呼び出される可能性があります）。
 
-Wine のソースに若干手を加えてあるバイナリです。MacPorts や Homebrew でインストールした Wine とは一部動作が異なります。詳しくは http://matome.naver.jp/odai/2138009369610432001 を参照してください。
+<p style="font-size: smaller">
+＊1：デスクトップ上に同じ名前のディスクイメージが存在する場合は上書きされます。</p>
+
+### 実行例
+
+以下は「MikuInstaller-20080803.dmg」がユーザーのホームディレクトリにある場合の例です。
 
 
-## あとがき
+    /Volumes/MikuPlusKit_@VERSION@/update.sh ~/MikuInstaller-20080803.dmg
 
-MikuInstaller+ Kit は mattintosh4 が個人で制作したもので MikuInstaller Project とは一切関係ありません。
 
-- GitHub：@GitHub@
-- Twitter：https://twitter.com/mattintosh4
+
+変更点について
+--------------------------------------------------------------------------------
+
+-   MikuInstaller.app から X11.app が実行されないようにしてあります。
+
+-   `WINEDEBUG` で fixme の出力を抑制してあります。
+
+-   Stream.exe 用の設定が追加されています。不要であれば winecfg から削除してください。
+
+-   `MikuInstaller.app/Contents/Resources/Wine.bundle/Contents` 以下にある `SharedFrameworks` は `_SharedFrameworks` に名前が変更され、`SharedSupport` については一部のファイルが新しいもので上書きされます。
+
+
+
+### 備考
+
+-   Gecko と Mono はキットに含まれていません。WINEPREFIX 初期化時にダウンロードを促すダイアログが表示されますのでインストールしておくことをおすすめします。
+
+-   アプリケーションのバンドル化機能については修正していないためエラーになります。MikuInstaller の環境設定から無効にしてください。
+
+-   一部の Windows アプリケーションが glu32.dll を必要とするため、いくつかのモジュールが XQuartz のライブラリを使用するようになっています。必要に応じて XQuartz をインストールしてください。
+
+-   「プロセスの状況」ウィンドウの［強制終了］ボタンが動作しないようです。Wine を強制終了する場合は アクティビティモニタ.app から「wine」と「wineserver」を終了するか、ターミナルなどで `killall wine wineserver` を実行してください。
+
+-   現在の Wine は OS X のグラフィックスドライバを使用するため一部のアプリケーションで描画が正しく行われないことがあります。レジストリを変更することにより以前の X11 グラフィックスドライバに切り替えが可能です。X11 のグラフィックスドライバを使用する場合は XQuartz が必要です。
+
+-   稀に Wine のウィンドウを補足できなくなることがあります。Wine を強制終了してください。
+
+
+
+ヘルプ
+--------------------------------------------------------------------------------
+
+### MikuInstaller+ Kit 関連
+
+#### Q：MikuInstaller+ の状態からさらに Wine を更新することはできますか？
+
+不可能ではありませんが非常に困難です。
+
+#### Q：今後も Wine の更新に合わせて新しい MikuInstaller+ Kit を配信する予定はありますか？
+
+今のところありません。
+
+#### Q：Wine.bundle はディスクイメージのどこにありますか？
+
+誤操作を避けるため不可視ディレクトリ `.rsrc` に収録してあります。
+
+#### Q：致命的なバグを発見しました！
+
+各自で修正してください。本当に致命的なものであればプルリクエストを送っていだければ修正するかもしれません。
+
+### MikuInstaller 関連
+
+#### Q：MikuInstaller.app を以前のバージョンに戻すにはどうしたらいいですか？
+
+MiuInstaller+ から元に戻すことはできません。MikuInstaller のディスクイメージからインストールし直してください。
+
+#### Q：MikuInstaller.app からレジストリエディタを呼び出すにはどうすればいいですか？
+
+環境設定の［WINEPREFIX］タブで［C:ドライブをFinderで開く］を選択し、`windows` フォルダにある `regedit.exe` を MikuInstaller.app で実行します。
+
+環境変数 `WINEPREFIX` を指定することでターミナルでも呼び出しができます。
+
+    WINEPREFIX="$HOME/Library/Application Support/MikuInstaller/prefix/default" \
+    /Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/bin/wine regedit
+
+
+
+その他
+--------------------------------------------------------------------------------
+
+### Wine のバイナリについて
+
+Wine.bundle に含まれる Wine は2013年10月現在の Nihonshu バイナリと同等のものです。依存ライブラリの種類は MikuInstaller に合わせてあります。
+
+<p style="font-size: smaller">
+Nihonshu バイナリは Wine のソースに若干手を加えたもので MacPorts や Homebrew でインストールした Wine とは一部動作が異なります。詳しくは <a href="http://matome.naver.jp/odai/2138009369610432001">http://matome.naver.jp/odai/2138009369610432001</a> を参照してください。</p>
+
+### Wine.bundle 内のソフトウェアについて
+
+Wine.bundle には以下のソフトウェアが含まれています。
+
+-   [Wine](http://www.winehq.org/)
+-   [freetype](http://freetype.sourceforge.net/)
+-   [libjpeg-turbo](http://www.libjpeg-turbo.org/)
+-   [libpng](http://www.libpng.org/pub/png/libpng.html)
+-   [libtiff](http://www.remotesensing.org/libtiff/)
+-   [Little-CMS](http://www.littlecms.com/)
+-   [xz](http://tukaani.org/xz/)
+
+
+
+あとがき
+--------------------------------------------------------------------------------
+
+当ソフトウェアは予告なしに仕様を変更することがあります。また、MikuInstaller+ Kit は mattintosh4 が個人で制作したもので MikuInstaller Project とは何の関係もありません。
+
+- GitHub<br /><https://github.com/mattintosh4/miku-plus-kit>
+- Twitter<br /><https://twitter.com/mattintosh4>

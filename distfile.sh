@@ -43,11 +43,12 @@ main()
     $INSTALL -m 0755 $PROJECT_ROOT/update.sh.in  $tmpdir/update.sh
     $INSTALL -m 0755 $PROJECT_ROOT/main.sh.in    $tmpdir/.rsrc/main.sh
     $INSTALL -m 0644 $PROJECT_ROOT/patch.diff.in $tmpdir/.rsrc/patch.diff
+    $INSTALL -m 0644 $PROJECT_ROOT/README.css    $tmpdir/.rsrc/style.css
     echo $PROJECT_VERSION >$tmpdir/VERSION
 
     {
         cat <<EOS
-<!doctype html><html><head><meta charset='utf-8'><title>$PROJECT_FULLNAME</title></head><body>
+<!doctype html><html><head><meta charset='utf-8' /><link rel="stylesheet" href=".rsrc/style.css" /><title>$PROJECT_FULLNAME $PROJECT_VERSION</title></head><body>
 EOS
         $PERL $PERL_MD_MODULE $PROJECT_ROOT/README.md
         cat <<EOS
