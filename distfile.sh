@@ -1,4 +1,5 @@
 #!/bin/sh
+PS4=
 define(){ eval ${1:?}=\"\${*\:2}\"; }
 
 set -e
@@ -31,8 +32,6 @@ define  DISTFILE_VOLN       ${PROJECT_NAME}_${PROJECT_VERSION}
 define  DISTFILE_NAME       ${PROJECT_NAME}_${PROJECT_VERSION}_${PROJECT_HASH}.dmg
 define  DISTFILE_PATH       $PROJECT_ROOT/$DISTFILE_NAME
 
-define  PS4
-
 #-------------------------------------------------------------------------------
 
 make_readme()
@@ -62,7 +61,7 @@ main()
 {
     tmpdir=$($MKTEMP -d -t $$$$)
     tmpdir_rsrc=$tmpdir/.rsrc
-    trap "rm -rf $tmpdir" EXIT SIGINT
+    trap "rm -rf $tmpdir" SIGINT EXIT
 
     $DITTO $BUNDLE_SOURCE $tmpdir_rsrc/$BUNDLE_NAME/Contents/SharedSupport
     $LN -s SharedSupport  $tmpdir_rsrc/$BUNDLE_NAME/Contents/SharedFrameworks
@@ -70,7 +69,6 @@ main()
     $INSTALL -m 0755 $PROJECT_ROOT/update.sh.in  $tmpdir/update.sh
     $INSTALL -m 0755 $PROJECT_ROOT/main.sh.in    $tmpdir_rsrc/main.sh
     $INSTALL -m 0644 $PROJECT_ROOT/patch.diff.in $tmpdir_rsrc/patch.diff
-    echo $PROJECT_VERSION >$tmpdir/VERSION
 
     make_readme
 
