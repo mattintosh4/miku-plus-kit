@@ -46,7 +46,7 @@ MikuInstaller+ Kit は MikuInstaller-20080803.dmg から新しいバージョン
 
 1.  「MikuInstaller-20080803.dmg」を用意してください。（マウントする必要はありません）
 
-2.  「MikuPlusKit\_@VERSION@.dmg」をマウントし、ターミナル.app などから `update.sh` を実行します。実行の際に「MikuInstaller-20080803.dmg」のパスを引数に指定してください。
+2.  「@DISTFILE\_NAME@」をマウントし、ターミナル.app などから `update.sh` を実行します。実行の際に「MikuInstaller-20080803.dmg」のパスを引数に指定してください。
 
 3.  新しいディスクイメージがデスクトップ上に作成され<sup>＊1</sup>、マウントされたら完了です。
 
