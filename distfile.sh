@@ -24,7 +24,7 @@ GIT=/usr/local/git/bin/git
 
 # Variable definition
 _WINE_SOURCE_DIR=$1
-_WINE_VERSION=wine-1.7.9
+_WINE_VERSION=$($_WINE_SOURCE_DIR/bin/wine --version)
 
 _PROJECT_SOURCE_DIR=$(cd "$(dirname "$0")" && pwd)
 _PROJECT_NAME=MPK
