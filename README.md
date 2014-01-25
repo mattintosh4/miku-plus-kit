@@ -60,7 +60,7 @@ MikuInstaller+ Kit は MikuInstaller-20080803.dmg から新しいバージョン
 以下は「MikuInstaller-20080803.dmg」がユーザーのホームディレクトリにある場合の例です。
 
 
-    /Volumes/MikuPlusKit_@VERSION@/update.sh ~/MikuInstaller-20080803.dmg
+    /Volumes/@DISTFILE_VOLUME_NAME@/update.sh ~/MikuInstaller-20080803.dmg
 
 
 
