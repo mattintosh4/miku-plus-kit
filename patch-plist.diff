@@ -1,0 +1,16 @@
+diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist
+index c10d19b..af20f9f 100644
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Info.plist
+@@ -5,9 +5,9 @@
+ 	<key>CFBundleInfoDictionaryVersion</key>
+ 	<string>6.0</string>
+ 	<key>CFBundleGetInfoString</key>
+-	<string>MikuInstaller 20080803, wine-1.1.2</string>
++	<string>MikuInstaller+ @VERSION@, @WINE_VERSION@</string>
+ 	<key>CFBundleName</key>
+-	<string>MikuInstaller</string>
++	<string>MikuInstaller+</string>
+ 	<key>CFBundleVersion</key>
+ 	<string>20080803</string>
+ 	<key>CFBundlePackageType</key>

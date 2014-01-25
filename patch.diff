@@ -1,0 +1,271 @@
+diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
+index 1f499b5..8ffde4e 100755
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
+@@ -32,26 +32,36 @@ MIKUVERSION=20080803
+ set -e
+ PATH=/usr/bin:/bin:/usr/sbin
+ 
+-if [ -z "$MIKUBUNDLE" ]; then
+-  dir=`dirname "$0"`
+-  MIKUBUNDLE=`cd "$dir/../.." && pwd`
+-fi
+-MIKURESOURCE="$MIKUBUNDLE/Contents/Resources"
++case $MIKUBUNDLE in
++'')
++    MIKUBUNDLE=$(cd "$(dirname "$0")"/../../.. && pwd)
++    ;;
++esac
++MIKURESOURCE=$MIKUBUNDLE/Contents/Resources
+ 
+-if [ -z "$LANG" ]; then
+-  LANG=ja_JP.UTF-8
+-  export LANG
+-fi
++case $LANG in
++'')
++    LANG=ja_JP.UTF-8
++    export LANG
++esac
+ 
+-if [ "x$1" = "x--miku=debug" ]; then
+-  shift
+-  set -x
+-fi
++case $1 in
++--miku=debug)
++    shift
++    set -x
++    ;;
++esac
+ 
+ # MikuInstaller extensions
+ mikucmd=
+-mikucmd=`expr "x$1" : "x--miku=\(.*\)"` && shift
+-case "$mikucmd" in
++case $1 in
++--miku=*)
++    mikucmd=${1#--miku=}
++    shift
++    ;;
++esac
++
++case $mikucmd in
+   version)            # print version of MikuInstaller
+     echo "$MIKUVERSION"
+     exit
+@@ -62,35 +72,36 @@ case "$mikucmd" in
+     exit $?
+     ;;
+   addapp)             # add application bundles from start menu or exe file
+-    . "$MIKURESOURCE/script/addapp.sh"
++    >&2 echo "$0: sorry, $mikucmd command is obsoleted by MPK."
+     exit
+     ;;
+   prefixcreate)       # create WINEPREFIX
+-    . "$MIKURESOURCE/script/wineprefixcreate.sh"
++    . "$MIKURESOURCE"/script/wineprefixcreate.sh
+     exit
+     ;;
+   winecmd)            # invoke a wine/bin command
+     # pass through to startwine.sh
+     ;;
+   shellexec)          # open a file by ShellExecEx.
+-    set -- wine "$MIKURESOURCE/lib/shellexec.exe.so" "$@"
++    case $1 in
++    -c)
++      shift
++      ;;
++    esac
++    set -- wine start /unix "$@"
+     ;;
+   '')                 # no extension specified; wine compatible mode
+     set -- wine "$@"
+     ;;
+   *)
+-    echo "$0: unknown command \`$mikucmd'" 1>&2
++    >&2 echo "$0: Unknown command \`$mikucmd'"
+     exit 1
+     ;;
+ esac
+ 
+-. "$MIKURESOURCE/script/startx11.sh"
+-. "$MIKURESOURCE/script/wineprefixcreate.sh"
+-
+-osascript <<END || :
+-with timeout 3 seconds
+-  tell application "X11" to activate
+-end timeout
+-END
++. "$MIKURESOURCE"/script/wineprefixcreate.sh
++. "$MIKURESOURCE"/script/startwine.sh
+ 
+-. "$MIKURESOURCE/script/startwine.sh"
++#################################
++# This file was modified by MPK #
++#################################
+diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
+index b85f1b4..3b649f7 100755
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
+@@ -2,10 +2,6 @@
+ #
+ # startwine.sh - start a wine command
+ #
+-# Wine requires that
+-# - X11 is already launched and $DISPLAY is appropriately set.
+-# - LD_LIBRARY_PATH includes a path to X11 libraries.
+-#
+ # Copyright (C) 2008 MikuInstaller Project. All rights reserved.
+ # http://mikuinstaller.sourceforge.jp/
+ #
+@@ -36,51 +32,26 @@ MIKUVERSION=20080803
+ set -e
+ PATH=/usr/bin:/bin:/usr/sbin
+ 
+-if [ -z "$MIKUBUNDLE" ]; then
+-  dir=`dirname "$0"`
+-  MIKUBUNDLE=`cd "$dir/../../.." && pwd`
+-fi
+-MIKURESOURCE="$MIKUBUNDLE/Contents/Resources"
+-MIKUFRAMEWORK="$MIKUBUNDLE/Contents/SharedFrameworks"
+-MIKUSUPPORT="$MIKUBUNDLE/Contents/SharedSupport"
+-
+-if [ -z "$DISPLAY" ]; then
+-  . "$MIKURESOURCE/script/startx11.sh"
+-fi
+-
+-# libfreetype.6.dylib is one of essential library for Wine.
+-if [ -f "/usr/X11/lib/libfreetype.6.dylib" ]; then
+-  X11DIR=/usr/X11
+-elif [ -f "/usr/X11R6/lib/libfreetype.6.dylib" ]; then
+-  X11DIR=/usr/X11R6
+-else
+-  echo "WARNING: libfreetype.6.dylib is not found in the standard place." 1>&2
+-  if [ -d "/usr/X11" ]; then
+-    X11DIR=/usr/X11
+-  else
+-    X11DIR=/usr/X11R6
+-  fi
+-fi
+-
+-if [ -n "$LD_LIBRARY_PATH" ]; then
+-  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:"
+-fi
+-LD_LIBRARY_PATH="$LD_LIBRARY_PATH""$MIKURESOURCE/lib:$MIKUFRAMEWORK/lib:$X11DIR/lib"
+-export LD_LIBRARY_PATH
+-
+-#
+-# WORKAROUND: Wine doesn't work with Apple's X11 on Tiger due to
+-# something wrong of OpenGL support of Apple's X11.
+-# To avoid this problem, we force to disable OpenGL support of wine
+-# if X11 is XFree86.
+-#
+-if $X11DIR/bin/xdpyinfo 2>&1 | grep XFree86 > /dev/null 2>&1; then
+-  WINE_OPENGL_HACK=0
+-  export WINE_OPENGL_HACK
+-fi
+-
+-PATH="$MIKUSUPPORT/bin:$PATH"
+-
+-prog="$1"
+-shift
+-exec "$prog" "$@"
++case $MIKUBUNDLE in
++'')
++    MIKUBUNDLE=$(cd "$(dirname "$0")"/../../.. && pwd)
++    ;;
++esac
++MIKURESOURCE=$MIKUBUNDLE/Contents/Resources
++MIKUSUPPORT=$MIKURESOURCE/SharedSupport
++PATH=$MIKUSUPPORT/bin:$PATH
++
++case ${WINEDEBUG+1} in
++1)
++    ;;
++*)
++    WINEDEBUG=fixme-all
++    export WINEDEBUG
++    ;;
++esac
++
++exec "$@"
++
++#################################
++# This file was Modified by MPK #
++#################################
+diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
+index 041242e..d7ea48d 100755
+--- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
++++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
+@@ -32,38 +32,44 @@ MIKUVERSION=20080803
+ set -e
+ PATH=/usr/bin:/bin:/usr/sbin
+ 
+-if [ -z "$MIKUBUNDLE" ]; then
+-  dir=`dirname "$0"`
+-  MIKUBUNDLE=`cd "$dir/../../.." && pwd`
+-fi
+-MIKURESOURCE="$MIKUBUNDLE/Contents/Resources"
++case $MIKUBUNDLE in
++'')
++    MIKUBUNDLE=$(cd "$(dirname "$0")"/../../.. && pwd)
++    ;;
++esac
++MIKURESOURCE=$MIKUBUNDLE/Contents/Resources
+ 
+-if [ -n "$WINEPREFIX" ]; then
+-  timestamp="$WINEPREFIX/.miku-timestamp"
+-else
+-  timestamp="$HOME/.wine/.miku-timestamp"
+-fi
+-updated=no
++case ${WINEPREFIX+1} in
++1) timestamp=$WINEPREFIX/.miku-timestamp ;;
++*) timestamp=$HOME/.wine/.miku-timestamp ;;
++esac
+ 
+-for i in "$MIKURESOURCE/inf/"*.inf; do
+-  if [ "$i" -nt "$timestamp" ]; then
+-    updated=yes
++updated=0
++for f in "$MIKURESOURCE"/inf/*.inf
++{
++    test "$f" -nt "$timestamp" || continue
+     # InstallHinfSection requires UNQUOTED filename but wine does quote
+     # a command line argument if it includes spaces.
+     # To prevent the quotation, make a temporary file, whose path doesn't
+     # include any spaces, copy inf file to the file, and then run
+     # InstallHinfSection.
+-    tmp=`mktemp -t tmp`
+-    cp "$i" "$tmp"
+     (
+-      trap "rm $tmp" EXIT
+-      set -- wine rundll32 setupapi,InstallHinfSection \
+-             DefaultInstall 128 '\\?\unix'"$tmp"
+-      . "$MIKURESOURCE/script/startwine.sh"
+-    ) || exit $?
+-  fi
+-done
++        tmp=`mktemp -t tmp`
++        trap "rm $tmp" EXIT
++        cp "$f" $tmp
++        set -- wine rundll32 setupapi,InstallHinfSection \
++               DefaultInstall 128 '\\?\unix'$tmp
++        (. "$MIKURESOURCE"/script/startwine.sh) || exit $?
++    )
++    updated=1
++}
+ 
+-if [ "x$updated" = "xyes" ]; then
+-  date '+%s' > "$timestamp" || :
+-fi
++case $updated in
++1)
++    date +%s > $timestamp || :
++    ;;
++esac
++
++#################################
++# This file was modified by MPK #
++#################################
