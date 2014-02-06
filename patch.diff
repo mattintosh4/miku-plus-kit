@@ -1,5 +1,5 @@
 diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
-index 1f499b5..8ffde4e 100755
+index 1f499b5..227eb18 100755
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/MacOS/wine
 @@ -32,26 +32,36 @@ MIKUVERSION=20080803
@@ -68,7 +68,8 @@ index 1f499b5..8ffde4e 100755
      exit
      ;;
    winecmd)            # invoke a wine/bin command
-     # pass through to startwine.sh
+-    # pass through to startwine.sh
++    set -- wine "$@"
      ;;
    shellexec)          # open a file by ShellExecEx.
 -    set -- wine "$MIKURESOURCE/lib/shellexec.exe.so" "$@"
@@ -105,7 +106,7 @@ index 1f499b5..8ffde4e 100755
 +# This file was modified by MPK #
 +#################################
 diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
-index b85f1b4..3b649f7 100755
+index b85f1b4..30b4efe 100755
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
 @@ -2,10 +2,6 @@
@@ -119,7 +120,7 @@ index b85f1b4..3b649f7 100755
  # Copyright (C) 2008 MikuInstaller Project. All rights reserved.
  # http://mikuinstaller.sourceforge.jp/
  #
-@@ -36,51 +32,26 @@ MIKUVERSION=20080803
+@@ -36,51 +32,24 @@ MIKUVERSION=20080803
  set -e
  PATH=/usr/bin:/bin:/usr/sbin
  
@@ -180,10 +181,8 @@ index b85f1b4..3b649f7 100755
 +MIKUSUPPORT=$MIKURESOURCE/SharedSupport
 +PATH=$MIKUSUPPORT/bin:$PATH
 +
-+case ${WINEDEBUG+1} in
-+1)
-+    ;;
-+*)
++case ${WINEDEBUG+:} in
++'')
 +    WINEDEBUG=fixme-all
 +    export WINEDEBUG
 +    ;;
@@ -195,7 +194,7 @@ index b85f1b4..3b649f7 100755
 +# This file was Modified by MPK #
 +#################################
 diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
-index 041242e..d7ea48d 100755
+index 041242e..64f1fdf 100755
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/wineprefixcreate.sh
 @@ -32,38 +32,44 @@ MIKUVERSION=20080803
@@ -220,8 +219,8 @@ index 041242e..d7ea48d 100755
 -  timestamp="$HOME/.wine/.miku-timestamp"
 -fi
 -updated=no
-+case ${WINEPREFIX+1} in
-+1) timestamp=$WINEPREFIX/.miku-timestamp ;;
++case ${WINEPREFIX:+:} in
++:) timestamp=$WINEPREFIX/.miku-timestamp ;;
 +*) timestamp=$HOME/.wine/.miku-timestamp ;;
 +esac
  

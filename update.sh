@@ -27,7 +27,7 @@ _MY_VERSION=@VERSION@
 _MY_WINE_VERSION=@WINE_VERSION@
 _MY_PREFIX=$(cd "$(dirname "$0")" && pwd)
 _MY_DATA_DIR=$_MY_PREFIX/.rsrc
-_MY_NEW_DMG_FILE_NAME=$_MY_NAME\_$_MY_VERSION.dmg
+_MY_NEW_DMG_FILE_NAME=$_MY_NAME-${_MY_VERSION//-/}.dmg
 _MY_NEW_DMG_VOLUME_NAME=$_MY_NAME
 
 #-------------------------------------------------------------------------------

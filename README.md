@@ -34,7 +34,6 @@ MikuInstaller+ Kit は MikuInstaller-20080803.dmg から新しいバージョン
 
 -   __いかなる損害においても当方は一切責任を負いません。作業は全て自己責任で行なってください。__
 
-
 -   __既存の WINEPREFIX を破壊する可能性があります。事前に WINEPREFIX のバックアップを行うことをおすすめします。__
 
 -   このキットは MikuInstaller-20080803.dmg 以外には使用できません。
@@ -48,17 +47,15 @@ MikuInstaller+ Kit は MikuInstaller-20080803.dmg から新しいバージョン
 
 2.  「@DISTFILE\_NAME@」をマウントし、ターミナル.app などから `update.sh` を実行します。実行の際に「MikuInstaller-20080803.dmg」のパスを引数に指定してください。
 
-3.  新しいディスクイメージがデスクトップ上に作成され<sup>＊1</sup>、マウントされたら完了です。
+3.  カレントディレクトリに新しい MikuInstaller.app と保存用のディスクイメージが作成されたら完了です。（※既にファイルが存在する場合は上書きされます）
 
-4.  新しい MikuInstaller.app を使用する前に古い MikuInstaller.app を新しいもので上書きするか削除してください（古い方が呼び出される可能性があります）。
+4.  古い MikuInstaller.app が呼び出される可能性があるため新しいアプリケーションを使用する前に古い MikuInstaller.app を削除するか新しいもので上書きしてください。
 
-<p style="font-size: smaller">
-＊1：デスクトップ上に同じ名前のディスクイメージが存在する場合は上書きされます。</p>
+
 
 ### 実行例
 
 以下は「MikuInstaller-20080803.dmg」がユーザーのホームディレクトリにある場合の例です。
-
 
     /Volumes/@DISTFILE_VOLUME_NAME@/update.sh ~/MikuInstaller-20080803.dmg
 
