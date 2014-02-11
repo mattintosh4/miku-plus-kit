@@ -47,9 +47,13 @@ esac
 # Import MikuInstaller resources
 set -- $($MKTEMP -u -t $$)
 $HDIUTIL_ATTACH "$_MIKU_DMG" -mountpoint "$1"
-$RSYNC -R --filter='. -' "$1"/./"$_MIKU_APP_NAME" . <<!
+$RSYNC -mR --filter='. -' "$1"/./"$_MIKU_APP_NAME" . <<!
++ SharedSupport/share/
++ SharedSupport/share/wine/
++ SharedSupport/share/wine/fonts/
++ SharedSupport/share/wine/fonts/ume-*.ttf
+- SharedSupport/**
 - SharedFrameworks/
-- SharedSupport/
 - addapp.sh
 - createapp.sh
 - infoplist.awk

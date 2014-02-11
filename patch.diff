@@ -106,7 +106,7 @@ index 1f499b5..227eb18 100755
 +# This file was modified by MPK #
 +#################################
 diff --git a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
-index b85f1b4..30b4efe 100755
+index b85f1b4..12533fd 100755
 --- a/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
 +++ b/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources/script/startwine.sh
 @@ -2,10 +2,6 @@
@@ -120,7 +120,7 @@ index b85f1b4..30b4efe 100755
  # Copyright (C) 2008 MikuInstaller Project. All rights reserved.
  # http://mikuinstaller.sourceforge.jp/
  #
-@@ -36,51 +32,24 @@ MIKUVERSION=20080803
+@@ -36,51 +32,15 @@ MIKUVERSION=20080803
  set -e
  PATH=/usr/bin:/bin:/usr/sbin
  
@@ -149,7 +149,11 @@ index b85f1b4..30b4efe 100755
 -    X11DIR=/usr/X11R6
 -  fi
 -fi
--
++case $MIKUBUNDLE in '') MIKUBUNDLE=$(cd "$(dirname "$0")"/../../.. && pwd) ;; esac
++MIKURESOURCE=$MIKUBUNDLE/Contents/Resources
++MIKUSUPPORT=$MIKUBUNDLE/Contents/SharedSupport
++PATH=$MIKUSUPPORT/bin:$PATH
+ 
 -if [ -n "$LD_LIBRARY_PATH" ]; then
 -  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:"
 -fi
@@ -166,30 +170,14 @@ index b85f1b4..30b4efe 100755
 -  WINE_OPENGL_HACK=0
 -  export WINE_OPENGL_HACK
 -fi
--
++case ${WINEDEBUG+:} in '') WINEDEBUG=fixme-all ; export WINEDEBUG ;; esac
+ 
 -PATH="$MIKUSUPPORT/bin:$PATH"
--
++exec "$@"
+ 
 -prog="$1"
 -shift
 -exec "$prog" "$@"
-+case $MIKUBUNDLE in
-+'')
-+    MIKUBUNDLE=$(cd "$(dirname "$0")"/../../.. && pwd)
-+    ;;
-+esac
-+MIKURESOURCE=$MIKUBUNDLE/Contents/Resources
-+MIKUSUPPORT=$MIKURESOURCE/SharedSupport
-+PATH=$MIKUSUPPORT/bin:$PATH
-+
-+case ${WINEDEBUG+:} in
-+'')
-+    WINEDEBUG=fixme-all
-+    export WINEDEBUG
-+    ;;
-+esac
-+
-+exec "$@"
-+
 +#################################
 +# This file was Modified by MPK #
 +#################################

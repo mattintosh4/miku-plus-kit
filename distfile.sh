@@ -39,7 +39,7 @@ tempdir=$($MKTEMP -d -t $$)
 trap "$RM -r $tempdir" INT EXIT
 cd $tempdir
 
-set -- .rsrc/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/Resources
+set -- .rsrc/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents
 $MKDIR "$1"
 $RSYNC -R --filter='- .DS_Store' "$_WINE_SOURCE_DIR"/./ "$1"/SharedSupport
 $LN -s SharedSupport "$1"/SharedFrameworks
